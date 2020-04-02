@@ -6,7 +6,7 @@ class xy():
         self.y = y
         
     def __repr__(self):
-        return '({}, {})'.format(self.x, self.y)
+        return '({}, {})'.format(round(self.x, 2), round(self.y, 2))
     
     def getX(self):
         return self.x

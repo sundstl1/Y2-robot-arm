@@ -16,19 +16,22 @@ class GUI(QtWidgets.QMainWindow):
         self.setCentralWidget(QtWidgets.QWidget()) # QMainWindown must have a centralWidget to be able to add layouts
         self.vertical = QtWidgets.QVBoxLayout() # Vertical main layout
         self.centralWidget().setLayout(self.vertical)
+        self.label = QtWidgets.QLabel()
+        self.vertical.addWidget(self.label)
         self.arm = arm
         self.jointGraphics = []
         self.connectionGraphics = []
         self.jointSliders = []
         self.initWindow()
-        self.addJointGraphicsItems()
         self.addConnectionGraphicsItems()
+        self.addJointGraphicsItems()
+        
         self.addJointSliders()
         
         
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.updateScene)
-        self.timer.start(100) # Milliseconds
+        self.timer.start(10) # Milliseconds
         
     def initWindow(self):
         '''
@@ -49,9 +52,16 @@ class GUI(QtWidgets.QMainWindow):
         self.vertical.addWidget(self.view)
     
     def addJointGraphicsItems(self):
-        brush1 = QBrush(QColor(255,0,0))
+        brush1 = QBrush(QColor(111,111,111))
         brush2 = QBrush(QColor(0,255,0))
+        brush3 = QBrush(QColor(255,0,0))
         joint = self.arm
+        if (not joint.IsEmpty()):
+            jointGraphic = JointGraphicsItem(joint)
+            jointGraphic.setBrush(brush3)
+            self.jointGraphics.append(jointGraphic)
+            self.scene.addItem(jointGraphic)
+            joint = joint.tail
         while (not joint.IsEmpty()):
             jointGraphic = JointGraphicsItem(joint)
             jointGraphic.setBrush(brush1)
@@ -96,10 +106,13 @@ class GUI(QtWidgets.QMainWindow):
             joint = joint.tail
         vbox.addWidget(slider)
 
-            
+    def updateLabel(self):
+        self.label.setText("grabber location: " + str(self.arm.EndPosition(xy(0, 0))))
+    
     def updateScene(self):
         self.updateJoints()
         self.updateConnections()
+        self.updateLabel()
              
             
         

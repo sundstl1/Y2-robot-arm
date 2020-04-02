@@ -31,7 +31,7 @@ class Empty(Arm):
         raise ArmException("arm empty")
 
     def TrueAngle(self):
-        return -90
+        return 0
     
     def EndPosition(self, previousPosition):
         return previousPosition
@@ -87,7 +87,7 @@ class Joint(Arm):
     
     def EndPosition(self, previousPosition):
         angle = math.radians(self.TrueAngle())
-        position = xy(self.length * math.cos(angle), self.length * math.sin(angle))
+        position = xy(self.length * math.sin(angle), self.length * math.cos(angle))
         position.addXy(previousPosition)
         return self.tail.EndPosition(position)
 
@@ -102,13 +102,23 @@ class Joint(Arm):
         
     def angleUpdater(self):
         while(1):
-            time.sleep(0.005)
+            time.sleep(0.01)
+            
+            #Make sure each joint takes the shortest route
             difference = self.angle - self.setAngle
+            if (difference > 180):
+                difference -= 360
+            elif (difference < -180):
+                difference += 360
+                
             if (difference == 0):
+                #no change neeeded
                 continue
+            
             elif (difference > 0):
                 change = min(difference, 0.1)
             else:
                 change = max(difference, -0.1)
+                
             self.angle -= change
             
