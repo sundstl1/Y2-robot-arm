@@ -26,13 +26,13 @@ class Empty(Arm):
         Returns the nth joint in an arm, counting from zero.
         Raises exception ArmException, if self is empty.
         '''
-        raise ArmException("arm empty") # Replace this with the correct implementation
+        raise ArmException("arm empty")
 
     def TrueAngle(self):
-        return 0
+        return -90
     
-    def EndPosition(self, xy):
-        return xy
+    def EndPosition(self, previousPosition):
+        return previousPosition
     
     def __repr__(self):
         return 'Empty()'
@@ -56,8 +56,7 @@ class Joint(Arm):
 
     def NthJoint(self, n):
         '''
-        Returns the value of the nth cell in a LinkedList, counting from zero.
-        Raises exception LinkedListException, if self is empty.
+        returns the nth joint.
         '''
         if n == 0:
             return self
@@ -66,6 +65,10 @@ class Joint(Arm):
     
     def TrueAngle(self):
         trueAngle = self.angle + self.tail.TrueAngle()
+        
+        '''
+        set angle in the range 0-360.
+        '''
         while (trueAngle > 360):
             trueAngle -= 360
         while (trueAngle < 0):
@@ -80,3 +83,9 @@ class Joint(Arm):
 
     def __repr__(self):
         return 'Joint(length: {}, angle: {}, setAngle: {}, tail: {})'.format(self.length, self.angle, self.setAngle, self.tail)
+    
+    def changeAngle(self, angle):
+        self.angle = angle
+    
+    def changeLength(self, length):
+        self.length = length    

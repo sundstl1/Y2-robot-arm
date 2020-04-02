@@ -63,7 +63,6 @@ class Joint_Test(unittest.TestCase):
         joint = Joint(5,0,joint)
         
         exception = False
-        
         try:
             joint.NthJoint(5)
         except ArmException:
