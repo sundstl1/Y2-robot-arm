@@ -11,9 +11,13 @@ from guiControls import jointSlider
 
 def main():
     joint1 = Joint(50, 0, Empty())
-    joint2 = Joint(120,30, joint1)
-    arm = Joint(150,50, joint2)
-    arm = Joint(70, 250, arm)
+    joint2 = Joint(40,0, joint1)
+    arm = Joint(20,0, joint2)
+    arm = Joint(70, 0, arm)
+    arm = Joint(20, 0, arm)
+    arm = Joint(20, 0, arm)
+    arm = Joint(20, 0, arm)
+    arm = Joint(20, 0, arm)
     
     global app # Use global to prevent crashing on exit
     app = QApplication(sys.argv)

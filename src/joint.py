@@ -2,6 +2,8 @@ from arm import Arm
 from arm import ArmException
 from coordinates import xy
 import math
+import threading
+import time
 
 class Empty(Arm):
     '''A singleton representing the empty list'''
@@ -52,6 +54,9 @@ class Joint(Arm):
         self.angle = angle
         self.setAngle = angle
         self.tail = tail
+        
+        thread = threading.Thread(target=self.angleUpdater)
+        thread.start()
 
     def IsEmpty(self):
         return False
@@ -90,7 +95,20 @@ class Joint(Arm):
         return 'Joint(length: {}, angle: {}, setAngle: {}, tail: {})'.format(self.length, self.angle, self.setAngle, self.tail)
     
     def changeAngle(self, angle):
-        self.angle = angle
+        self.setAngle = angle
     
     def changeLength(self, length):
-        self.length = length    
+        self.length = length
+        
+    def angleUpdater(self):
+        while(1):
+            time.sleep(0.005)
+            difference = self.angle - self.setAngle
+            if (difference == 0):
+                continue
+            elif (difference > 0):
+                change = min(difference, 0.1)
+            else:
+                change = max(difference, -0.1)
+            self.angle -= change
+            
