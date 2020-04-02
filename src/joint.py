@@ -37,6 +37,11 @@ class Empty(Arm):
     def __repr__(self):
         return 'Empty()'
 
+    def changeAngle(self, angle):
+        raise ArmException("empty arm has no angle")
+    
+    def changeLength(self, length):
+        raise ArmException("empty arm has no length")
 
 class Joint(Arm):
 

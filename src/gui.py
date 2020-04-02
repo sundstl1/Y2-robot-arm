@@ -1,8 +1,10 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.Qt import QBrush, QColor
+from PyQt5.Qt import QBrush, QColor, QVBoxLayout, QGroupBox
+
 from armGraphics import JointGraphicsItem
 from armGraphics import ConnectionGraphicsItem
 from coordinates import xy
+from guiControls import jointSlider
 
 class GUI(QtWidgets.QMainWindow):
     '''
@@ -12,14 +14,17 @@ class GUI(QtWidgets.QMainWindow):
     def __init__(self, arm):
         super().__init__()
         self.setCentralWidget(QtWidgets.QWidget()) # QMainWindown must have a centralWidget to be able to add layouts
-        self.horizontal = QtWidgets.QHBoxLayout() # Horizontal main layout
-        self.centralWidget().setLayout(self.horizontal)
+        self.vertical = QtWidgets.QVBoxLayout() # Vertical main layout
+        self.centralWidget().setLayout(self.vertical)
         self.arm = arm
         self.jointGraphics = []
         self.connectionGraphics = []
+        self.jointSliders = []
         self.initWindow()
         self.addJointGraphicsItems()
         self.addConnectionGraphicsItems()
+        self.addJointSliders()
+        
         
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.updateScene)
@@ -41,7 +46,7 @@ class GUI(QtWidgets.QMainWindow):
         self.view = QtWidgets.QGraphicsView(self.scene, self)
         self.view.adjustSize()
         self.view.show()
-        self.horizontal.addWidget(self.view)
+        self.vertical.addWidget(self.view)
     
     def addJointGraphicsItems(self):
         brush1 = QBrush(QColor(255,0,0))
@@ -75,6 +80,22 @@ class GUI(QtWidgets.QMainWindow):
     def updateConnections(self):
         for connectionGraphic in self.connectionGraphics:
             connectionGraphic.updatePosition()
+    
+    def addJointSliders(self):
+        joint = self.arm
+        controlBox = QGroupBox("Controls")
+        self.vertical.addWidget(controlBox)
+        vbox = QVBoxLayout()
+        controlBox.setLayout(vbox)
+        
+        
+        while (not joint.IsEmpty()):
+            slider = jointSlider(joint)
+            self.jointSliders.append(slider)
+            vbox.addWidget(slider)
+            joint = joint.tail
+        vbox.addWidget(slider)
+
             
     def updateScene(self):
         self.updateJoints()
