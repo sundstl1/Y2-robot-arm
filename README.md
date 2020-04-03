@@ -4,6 +4,7 @@
 
 1. Mitä ominaisuuksia olet jo toteuttanut projektiisi?
     * The project currently conforms to "Iteration 2".
+    * A branch named Iteration_2_finished has been created to save this state for future reference.
     * A specification for what that means can be found on page 3 in the project plan.
 
 2. Käyttöohje
