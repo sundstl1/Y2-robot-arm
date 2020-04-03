@@ -44,6 +44,9 @@ class Empty(Arm):
     
     def changeLength(self, length):
         raise ArmException("empty arm has no length")
+    
+    def close(self):
+        return
 
 class Joint(Arm):
 
@@ -54,9 +57,11 @@ class Joint(Arm):
         self.angle = angle
         self.setAngle = angle
         self.tail = tail
+        self.RUNNING = True
         
         thread = threading.Thread(target=self.angleUpdater)
         thread.start()
+        
 
     def IsEmpty(self):
         return False
@@ -100,8 +105,13 @@ class Joint(Arm):
     def changeLength(self, length):
         self.length = length
         
+    def close(self):
+        #This function closes all joint threads
+        self.RUNNING = False
+        self.tail.close()
+        
     def angleUpdater(self):
-        while(1):
+        while self.RUNNING:
             time.sleep(0.01)
             
             #Make sure each joint takes the shortest route
@@ -114,11 +124,9 @@ class Joint(Arm):
             if (difference == 0):
                 #no change neeeded
                 continue
-            
             elif (difference > 0):
                 change = min(difference, 0.1)
             else:
                 change = max(difference, -0.1)
-                
             self.angle -= change
             

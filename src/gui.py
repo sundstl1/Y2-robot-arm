@@ -33,6 +33,10 @@ class GUI(QtWidgets.QMainWindow):
         self.timer.timeout.connect(self.updateScene)
         self.timer.start(10) # Milliseconds
         
+    def closeEvent(self, *args, **kwargs):
+        self.arm.close()
+        return QtWidgets.QMainWindow.closeEvent(self, *args, **kwargs)
+        
     def initWindow(self):
         '''
         Sets up the window.

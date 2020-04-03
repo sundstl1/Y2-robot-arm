@@ -10,13 +10,17 @@ from gui import GUI
 from guiControls import jointSlider
 
 def main():
-    joint1 = Joint(50, 0, Empty())
-    joint2 = Joint(40,0, joint1)
-    arm = Joint(20,0, joint2)
-    arm = Joint(70, 0, arm)
+    #add or remove lines like this to add or remove joints to arm.
+    #joint takes parameters: Joint(jointLength, initialAngle)
+    #angles are given in degrees
+    arm = Joint(50, 0, Empty())
+    
+    arm = Joint(40, 30, arm)
     arm = Joint(20, 0, arm)
-    arm = Joint(20, 0, arm)
-    arm = Joint(20, 0, arm)
+    arm = Joint(70, -50, arm)
+    arm = Joint(30, 0, arm)
+    arm = Joint(60, 20, arm)
+    arm = Joint(40, 0, arm)
     arm = Joint(20, 0, arm)
     
     global app # Use global to prevent crashing on exit

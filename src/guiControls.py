@@ -11,7 +11,7 @@ class jointSlider(QtWidgets.QSlider):
       self.setOrientation(Qt.Horizontal)
       self.setMinimum(0)
       self.setMaximum(360)
-      self.setValue(0)
+      self.setValue(joint.angle)
       self.setTickPosition(QtWidgets.QSlider.TicksBelow)
       self.setTickInterval(20)
       self.valueChanged.connect(self.valuechange)
