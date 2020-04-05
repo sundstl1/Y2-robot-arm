@@ -2,7 +2,6 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.Qt import QBrush, QColor, QGraphicsEllipseItem, QRect, QPen, QWidget
 
 from coordinates import xy
-from PyQt5.QtWidgets import QToolTip
 
 class JointGraphicsItem(QtWidgets.QGraphicsEllipseItem):
 
@@ -12,9 +11,11 @@ class JointGraphicsItem(QtWidgets.QGraphicsEllipseItem):
 
         # Do other stuff
         self.joint = joint
+        self.overlap = False
+        self.box = None
+        self.tempBrush = None
         self.text = QtWidgets.QGraphicsSimpleTextItem()
         self.text.setText(str(joint.NumberOfJoints()))
-        self.setToolTip("test")
         brush = QtGui.QBrush(1) # 1 for even fill
         self.setBrush(brush)
         self.setRect(-8,-8 ,16,16)
@@ -23,9 +24,30 @@ class JointGraphicsItem(QtWidgets.QGraphicsEllipseItem):
     def updatePosition(self):
         location = self.joint.EndPosition(xy(350,350))
         x = location.getX()
-        y = 700-location.getY()
-        self.setPos(x, y)
-        self.text.setPos(x-3,y-7)
+        y = location.getY()
+        self.setPos(x, 700-y)
+        self.text.setPos(x-3,700-y-7)
+        if (self.box != None):
+            self.box.box.setXY(xy(x-350,y-350))        
+        
+    def grabBox(self):
+        if self.overlap:
+            overlappedItems = self.collidingItems()
+            for item in overlappedItems:
+                if (type(item).__name__ == 'BoxGraphicsItem'):
+                    boxGraphics = item
+                    self.box = boxGraphics
+                    self.tempBrush = self.brush()
+                    self.setBrush(QBrush(QColor(20,255,20))) 
+                    return True
+        return False
+    
+    def releaseBox(self):
+        self.setBrush(self.tempBrush)
+        self.box = None
+    
+    def toggleOverlap(self, bool):
+        self.overlap = bool
         
 class ConnectionGraphicsItem(QtWidgets.QGraphicsLineItem):
 

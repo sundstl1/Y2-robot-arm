@@ -1,11 +1,10 @@
 import unittest
 import math
 
-from arm import Arm
-from joint import Joint
-from joint import Empty
-from arm import ArmException
+from arm import Arm, ArmException
+from joint import Joint, Empty
 from coordinates import xy
+from box import Box, BoxException
 
 class Coordinate_test(unittest.TestCase):
     def testGet(self):
@@ -103,4 +102,38 @@ class Joint_Test(unittest.TestCase):
         self.assertEqual(5.340, round(endPosition.getX(), 3))
         
         joint5.close()
+        
+    def testBox(self):
+        box = Box(5,10,xy(100,200))
+        
+        self.assertEqual(5, box.getWidth())
+        self.assertEqual(10, box.getHeight())
+        self.assertEqual(100, box.getXY().getX())
+        self.assertEqual(200, box.getXY().getY())
+        
+        box.move(xy(150, 250))
+        self.assertEqual(150, box.getXY().getX())
+        self.assertEqual(250, box.getXY().getY())
+        
+        exception1 = False
+        try:
+            box2 = Box("test", 5, xy(0,0))
+        except BoxException:
+            exception1 = True
+            
+        exception2 = False
+        try:
+            box2 = Box(4, "test", xy(0,0))
+        except BoxException:
+            exception2 = True
+            
+        exception3 = False
+        try:
+            box3 = Box(4, 5, "xy(0,0)")
+        except BoxException:
+            exception3 = True
+            
+        self.assertTrue(exception1)
+        self.assertTrue(exception2)
+        self.assertTrue(exception3)
     

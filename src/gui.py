@@ -1,17 +1,20 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.Qt import QBrush, QColor, QVBoxLayout, QGroupBox, QHBoxLayout
+from PyQt5.Qt import QBrush, QColor, QVBoxLayout, QGroupBox, QHBoxLayout,\
+    QWidget
 
 from armGraphics import JointGraphicsItem
 from armGraphics import ConnectionGraphicsItem
 from coordinates import xy
-from guiControls import jointSlider
+from guiControls import jointSlider, GrabButton 
+from box import Box
+from boxGraphics import BoxGraphicsItem
 
 class GUI(QtWidgets.QMainWindow):
     '''
     The class GUI handles the drawing of a RobotWorld and allows user to
     interact with it.
     '''
-    def __init__(self, arm):
+    def __init__(self, arm, boxes):
         super().__init__()
         self.setCentralWidget(QtWidgets.QWidget()) # QMainWindown must have a centralWidget to be able to add layouts
         self.vertical = QtWidgets.QVBoxLayout() # Vertical main layout
@@ -19,14 +22,16 @@ class GUI(QtWidgets.QMainWindow):
         self.label = QtWidgets.QLabel()
         self.vertical.addWidget(self.label)
         self.arm = arm
+        self.boxes = boxes
         self.jointGraphics = []
         self.connectionGraphics = []
         self.jointSliders = []
+        self.boxGraphics = []
         self.initWindow()
         self.addConnectionGraphicsItems()
         self.addJointGraphicsItems()
-        
         self.addJointSliders()
+        self.addBoxes()
         
         
         self.timer = QtCore.QTimer()
@@ -57,12 +62,13 @@ class GUI(QtWidgets.QMainWindow):
     
     def addJointGraphicsItems(self):
         brush1 = QBrush(QColor(111,111,111))
-        brush2 = QBrush(QColor(0,255,0))
+        brush2 = QBrush(QColor(0,255,200))
         brush3 = QBrush(QColor(255,0,0))
         joint = self.arm
         if (not joint.IsEmpty()):
             jointGraphic = JointGraphicsItem(joint)
             jointGraphic.setBrush(brush3)
+            jointGraphic.toggleOverlap(True)
             self.jointGraphics.append(jointGraphic)
             self.scene.addItem(jointGraphic)
             joint = joint.tail
@@ -79,6 +85,18 @@ class GUI(QtWidgets.QMainWindow):
         self.jointGraphics.append(jointGraphic)
         self.scene.addItem(jointGraphic)
         self.scene.addItem(jointGraphic.text)
+        
+    def addBoxes(self):
+        for box in self.boxes:
+            if box in self.boxGraphics:
+                continue
+            else:
+                boxGraphic = BoxGraphicsItem(box)
+                self.scene.addItem(boxGraphic)
+                self.boxGraphics.append(boxGraphic)
+    def updateBoxes(self):
+        for box in self.boxGraphics:
+            box.updatePosition()
         
     def updateJoints(self):
         for jointGraphic in self.jointGraphics:
@@ -101,8 +119,11 @@ class GUI(QtWidgets.QMainWindow):
         joint = self.arm
         controlBox = QGroupBox("Controls")
         self.vertical.addWidget(controlBox)
+        hbox = QHBoxLayout()
+        widget = QtWidgets.QWidget()
         vbox = QVBoxLayout()
-        controlBox.setLayout(vbox)
+        controlBox.setLayout(hbox)
+        hbox.addLayout(vbox)
         
         
         while (not joint.IsEmpty()):
@@ -111,6 +132,9 @@ class GUI(QtWidgets.QMainWindow):
             vbox.addWidget(slider)
             joint = joint.tail
         vbox.addWidget(slider)
+        grabButton = GrabButton(self.jointGraphics[0])
+        hbox.addWidget(grabButton)
+        
 
     def updateLabel(self):
         self.label.setText("grabber location: " + str(self.arm.EndPosition(xy(0, 0))))
@@ -119,6 +143,7 @@ class GUI(QtWidgets.QMainWindow):
         self.updateJoints()
         self.updateConnections()
         self.updateLabel()
+        self.updateBoxes()
              
             
         

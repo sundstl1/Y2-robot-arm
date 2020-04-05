@@ -38,7 +38,7 @@ class jointSlider(QtWidgets.QWidget):
       self.numBox.setSingleStep(0.01)
       
       self.jointNumber = QtWidgets.QLabel()
-      self.jointNumber.setText(" joint " + str(joint.NumberOfJoints()-1))
+      self.jointNumber.setText(" joint " + str(joint.NumberOfJoints()-1) + ":")
       
       layout = QtWidgets.QHBoxLayout(self)
       self.setMaximumHeight(20)
@@ -58,4 +58,27 @@ class jointSlider(QtWidgets.QWidget):
    def numBoxValueChange(self, value):
        self.joint.changeAngle(value)
        self.slider.setValue(int(value*100))
+       
+class GrabButton(QtWidgets.QPushButton):
+   
+   def __init__(self, jointGraphics):
+       
+      super(GrabButton, self).__init__()
+      self.setCheckable(True)
+      self.setText("Grab")
+      self.jointGraphics = jointGraphics
+      
+      self.clicked.connect(self.buttonPress)
+      
+   def buttonPress(self):
+       if (not self.isChecked()):
+           self.jointGraphics.releaseBox()
+       else:
+            if (self.jointGraphics.grabBox() == False):
+                self.setChecked(False)
+           
+           
+        
+    
+    
     
