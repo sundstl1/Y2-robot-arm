@@ -44,6 +44,8 @@ class Joint_Test(unittest.TestCase):
         self.assertTrue(emptyJoint.IsEmpty())
         self.assertFalse(joint.IsEmpty())
         
+        joint.close()
+        
     def testNumberOfJoints(self):
         emptyJoint = Empty()
         joint = Joint(1,0,emptyJoint)
@@ -53,6 +55,8 @@ class Joint_Test(unittest.TestCase):
         
         self.assertEqual( 0, emptyJoint.NumberOfJoints())       
         self.assertEqual( 4, joint.NumberOfJoints())
+        
+        joint.close()
         
     def testNthJoint(self):
         emptyJoint = Empty()
@@ -71,6 +75,8 @@ class Joint_Test(unittest.TestCase):
         self.assertEqual(joint4, joint.NthJoint(4))
         self.assertTrue(exception)
         
+        joint.close()
+        
     def testTrueAngle(self):
         emptyJoint = Empty()
         joint1 = Joint(55,55,emptyJoint)
@@ -80,7 +86,9 @@ class Joint_Test(unittest.TestCase):
         joint5 = Joint(288,288,joint4)
         
         self.assertEqual(288-12+14+55+288-360, joint5.TrueAngle())
-'''        
+        
+        joint5.close()
+        
     def testEndPosition(self):
         emptyJoint = Empty()
         position = xy(0,0)
@@ -91,6 +99,8 @@ class Joint_Test(unittest.TestCase):
         joint5 = Joint(3,195,joint4)
         endPosition = joint5.EndPosition(position)
         
-        self.assertEqual(11.208, round(endPosition.getX(), 3))
-        self.assertEqual(5.340, round(endPosition.getY(), 3))
-    '''
+        self.assertEqual(11.208, round(endPosition.getY(), 3))
+        self.assertEqual(5.340, round(endPosition.getX(), 3))
+        
+        joint5.close()
+    

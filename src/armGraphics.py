@@ -1,7 +1,8 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
-from PyQt5.Qt import QBrush, QColor, QGraphicsEllipseItem, QRect, QPen
+from PyQt5.Qt import QBrush, QColor, QGraphicsEllipseItem, QRect, QPen, QWidget
 
 from coordinates import xy
+from PyQt5.QtWidgets import QToolTip
 
 class JointGraphicsItem(QtWidgets.QGraphicsEllipseItem):
 
@@ -11,14 +12,20 @@ class JointGraphicsItem(QtWidgets.QGraphicsEllipseItem):
 
         # Do other stuff
         self.joint = joint
+        self.text = QtWidgets.QGraphicsSimpleTextItem()
+        self.text.setText(str(joint.NumberOfJoints()))
+        self.setToolTip("test")
         brush = QtGui.QBrush(1) # 1 for even fill
         self.setBrush(brush)
-        self.setRect(-5,-5,10,10)
+        self.setRect(-8,-8 ,16,16)
         self.updatePosition()
         
     def updatePosition(self):
         location = self.joint.EndPosition(xy(350,350))
-        self.setPos(location.getX(), 700-location.getY())
+        x = location.getX()
+        y = 700-location.getY()
+        self.setPos(x, y)
+        self.text.setPos(x-3,y-7)
         
 class ConnectionGraphicsItem(QtWidgets.QGraphicsLineItem):
 
@@ -29,7 +36,7 @@ class ConnectionGraphicsItem(QtWidgets.QGraphicsLineItem):
         self.start = start
         self.end = end
         pen = QPen()
-        pen.setWidth(5)
+        pen.setWidth(7)
         self.setPen(pen)
         self.updatePosition()
         

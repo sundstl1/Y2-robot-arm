@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.Qt import QBrush, QColor, QVBoxLayout, QGroupBox
+from PyQt5.Qt import QBrush, QColor, QVBoxLayout, QGroupBox, QHBoxLayout
 
 from armGraphics import JointGraphicsItem
 from armGraphics import ConnectionGraphicsItem
@@ -71,12 +71,14 @@ class GUI(QtWidgets.QMainWindow):
             jointGraphic.setBrush(brush1)
             self.jointGraphics.append(jointGraphic)
             self.scene.addItem(jointGraphic)
+            self.scene.addItem(jointGraphic.text)
             joint = joint.tail
         #Once more for the root joint
         jointGraphic = JointGraphicsItem(joint)
         jointGraphic.setBrush(brush2)
         self.jointGraphics.append(jointGraphic)
         self.scene.addItem(jointGraphic)
+        self.scene.addItem(jointGraphic.text)
         
     def updateJoints(self):
         for jointGraphic in self.jointGraphics:
