@@ -96,6 +96,7 @@ class Joint(Arm):
         position.addXy(previousPosition)
         return self.tail.EndPosition(position)
 
+
     def __repr__(self):
         return 'Joint(length: {}, angle: {}, setAngle: {}, tail: {})'.format(self.length, self.angle, self.setAngle, self.tail)
     

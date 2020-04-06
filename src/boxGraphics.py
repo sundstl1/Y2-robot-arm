@@ -11,8 +11,8 @@ class BoxGraphicsItem(QtWidgets.QGraphicsRectItem):
         self.box = box
         brush = QtGui.QBrush(QColor(0,0,255),1) # 1 for even fill
         self.setBrush(brush)
-        self.setRect(-8,-8 ,box.width,box.height)
-        self.setTransformOriginPoint(self.box.getWidth()/2, self.box.getHeight()/2)
+        self.setRect(-1*box.width/2,-1*box.height/2 ,box.width,box.height)
+        self.setTransformOriginPoint(self.box.getHeight()/2, self.box.getWidth()/2)
         self.setZValue(-1)
         self.updatePosition()
         
