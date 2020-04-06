@@ -73,9 +73,12 @@ class GrabButton(QtWidgets.QPushButton):
    def buttonPress(self):
        if (not self.isChecked()):
            self.jointGraphics.releaseBox()
+           self.setText("Grab")
        else:
             if (self.jointGraphics.grabBox() == False):
                 self.setChecked(False)
+            else:
+                self.setText("Release")
            
            
         
