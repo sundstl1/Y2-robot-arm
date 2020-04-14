@@ -14,7 +14,8 @@
 
   - Kuinka ohjelma käynnistetään?
     * The program can be run by executing main.py in the src/ folder
-    * On my system that means running the command "python main.py"
+    * As Command line arguments, provide te desired arm lengths for the arm.
+    * On my system that means running the command "python main.py 70 50 45 37" for example.
 
   - Mitä sillä voi tässä vaiheessa tehdä?
     * The program shows a robot arm with an arbitrary number of joints.
@@ -23,7 +24,7 @@
     * A joint will always choose the shortest rotation direction to its set angle.
     * There is no physics simulation. movement speed is simply limited as a max change in angle / timeunit.
     * The coordinates of the arm endpoint is shown at the top of the window (origo is a the root of the arm).
-    * The amount of joints and arm lengths may be easily edited in main.py (lines 13-23)
+    * The amount of joints and arm lengths may be chosen by command line arguments.
 
 
 

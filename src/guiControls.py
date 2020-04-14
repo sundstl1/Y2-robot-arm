@@ -1,6 +1,6 @@
 import sys
 from PyQt5 import QtWidgets, QtGui, QtCore
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSize
 from PyQt5.Qt import QSpinBox
 
 class jointSlider(QtWidgets.QWidget):
@@ -38,18 +38,18 @@ class jointSlider(QtWidgets.QWidget):
       self.numBox.setSingleStep(0.01)
       
       self.jointNumber = QtWidgets.QLabel()
-      self.jointNumber.setText(" joint " + str(joint.NumberOfJoints()-1) + ":")
+      self.jointNumber.setText(" joint " + str(joint.NumberOfJoints()) + ":")
       
       layout = QtWidgets.QHBoxLayout(self)
       self.setMaximumHeight(20)
       layout.addWidget(self.jointNumber)
       layout.addWidget(self.numBox)
       layout.addWidget(self.slider)
-      
       layout.setContentsMargins(0, 0, 0, 0)
       
       self.slider.valueChanged.connect(self.sliderValueChange)
       self.numBox.valueChanged.connect(self.numBoxValueChange)
+      self.setMaximumHeight(100)
 
    def sliderValueChange(self, value):
       self.joint.changeAngle(float(value)/100)

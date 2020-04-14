@@ -14,11 +14,11 @@ class JointGraphicsItem(QtWidgets.QGraphicsEllipseItem):
         self.overlap = False
         self.box = None
         self.tempBrush = None
-        self.text = QtWidgets.QGraphicsSimpleTextItem()
-        self.text.setText(str(joint.NumberOfJoints()))
+        self.jointNumber = QtWidgets.QGraphicsSimpleTextItem()
+        self.jointNumber.setText(str(joint.NumberOfJoints()+1))
         brush = QtGui.QBrush(1) # 1 for even fill
         self.setBrush(brush)
-        self.setRect(-8,-8 ,16,16)
+        self.setRect(-7,-7 ,14,14)
         self.updatePosition()
         
     def updatePosition(self):
@@ -26,7 +26,7 @@ class JointGraphicsItem(QtWidgets.QGraphicsEllipseItem):
         x = location.getX()
         y = location.getY()
         self.setPos(x, 700-y)
-        self.text.setPos(x-3,700-y-7)
+        self.jointNumber.setPos(x-3,700-y-7)
         if (self.box != None):
             self.box.box.setXY(xy(x-350,y-350))        
         
@@ -58,7 +58,8 @@ class ConnectionGraphicsItem(QtWidgets.QGraphicsLineItem):
         self.start = start
         self.end = end
         pen = QPen()
-        pen.setWidth(7)
+        pen.setWidth(6)
+        pen.setColor(QColor(50,50,50))
         self.setPen(pen)
         self.updatePosition()
         

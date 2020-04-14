@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.Qt import QBrush, QColor, QVBoxLayout, QGroupBox, QHBoxLayout,\
-    QWidget
+    QWidget, QScrollArea, QPalette
 
 from armGraphics import JointGraphicsItem
 from armGraphics import ConnectionGraphicsItem
@@ -32,7 +32,7 @@ class GUI(QtWidgets.QMainWindow):
         self.addJointGraphicsItems()
         self.addJointSliders()
         self.addBoxes()
-        
+        self.view.show()
         
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.updateScene)
@@ -47,44 +47,49 @@ class GUI(QtWidgets.QMainWindow):
         Sets up the window.
         '''
         self.setGeometry(100, 100, 800, 800)
+        self.showMaximized()
         self.setWindowTitle('robotArm')
         self.show()
 
         # Add a scene for drawing 2d objects
         self.scene = QtWidgets.QGraphicsScene()
-        self.scene.setSceneRect(0, 0, 700, 700)
+        #self.scene.setSceneRect(0    , 0, 700, 700)
+        #self.scene.setFixedWidth(700)
 
         # Add a view for showing the scene
         self.view = QtWidgets.QGraphicsView(self.scene, self)
+        self.view.setFixedHeight(600)
+        self.view.setFixedWidth(800)
         self.view.adjustSize()
-        self.view.show()
+        
         self.vertical.addWidget(self.view)
     
     def addJointGraphicsItems(self):
-        brush1 = QBrush(QColor(111,111,111))
-        brush2 = QBrush(QColor(0,255,200))
+        brush1 = QBrush(QColor(170,170,170))
+        brush2 = QBrush(QColor(120,120,120))
         brush3 = QBrush(QColor(255,0,0))
         joint = self.arm
-        if (not joint.IsEmpty()):
-            jointGraphic = JointGraphicsItem(joint)
-            jointGraphic.setBrush(brush3)
-            jointGraphic.toggleOverlap(True)
-            self.jointGraphics.append(jointGraphic)
-            self.scene.addItem(jointGraphic)
-            joint = joint.tail
+        
+        endJoint = True
         while (not joint.IsEmpty()):
             jointGraphic = JointGraphicsItem(joint)
             jointGraphic.setBrush(brush1)
             self.jointGraphics.append(jointGraphic)
             self.scene.addItem(jointGraphic)
-            self.scene.addItem(jointGraphic.text)
+            #paint end joint as a different color and enable grabbing
+            if (endJoint):
+                jointGraphic.setBrush(brush3)
+                jointGraphic.toggleOverlap(True)
+                endJoint = False
+            else:
+                self.scene.addItem(jointGraphic.jointNumber)
             joint = joint.tail
         #Once more for the root joint
         jointGraphic = JointGraphicsItem(joint)
         jointGraphic.setBrush(brush2)
         self.jointGraphics.append(jointGraphic)
         self.scene.addItem(jointGraphic)
-        self.scene.addItem(jointGraphic.text)
+        self.scene.addItem(jointGraphic.jointNumber)
         
     def addBoxes(self):
         for box in self.boxes:
@@ -116,22 +121,32 @@ class GUI(QtWidgets.QMainWindow):
             connectionGraphic.updatePosition()
     
     def addJointSliders(self):
-        joint = self.arm
-        controlBox = QGroupBox("Controls")
-        self.vertical.addWidget(controlBox)
+        #Adding main control window
+        self.controlBox = QGroupBox("Controls")
+        self.vertical.addWidget(self.controlBox)
+        
+        #Splitting view for sliders and buttons
         hbox = QHBoxLayout()
-        widget = QtWidgets.QWidget()
-        vbox = QVBoxLayout()
-        controlBox.setLayout(hbox)
-        hbox.addLayout(vbox)
+        sliderContainer = QVBoxLayout()
+        sliderFrame = QGroupBox()
+        sliderFrame.setLayout(sliderContainer)
+        self.controlBox.setLayout(hbox)
         
+        #making sliders scrollable
+        scroll = QScrollArea()
+        scroll.setMaximumHeight(300)
+        scroll.setWidgetResizable(True)
+        scroll.setWidget(sliderFrame)
+        hbox.addWidget(scroll)
         
+        #adding joint sliders
+        joint = self.arm
         while (not joint.IsEmpty()):
             slider = jointSlider(joint)
             self.jointSliders.append(slider)
-            vbox.addWidget(slider)
+            sliderContainer.addWidget(slider)
             joint = joint.tail
-        vbox.addWidget(slider)
+        sliderContainer.addWidget(slider)
         grabButton = GrabButton(self.jointGraphics[0])
         hbox.addWidget(grabButton)
         
