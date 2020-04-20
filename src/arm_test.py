@@ -5,6 +5,8 @@ from arm import Arm, ArmException
 from joint import Joint, Empty
 from coordinates import xy
 from box import Box, BoxException
+from commandImporter import ArmCommand, CommandCsvReader
+from commandExecuter import *
 
 class Coordinate_test(unittest.TestCase):
     def testGet(self):
@@ -76,6 +78,28 @@ class Joint_Test(unittest.TestCase):
         
         joint.close()
         
+    def testReverseNthJoint(self):
+        emptyJoint = Empty()
+        joint1 = Joint(1,0,emptyJoint)
+        joint2 = Joint(2,0,joint1)
+        joint3 = Joint(3,0,joint2)
+        joint4 = Joint(4,0,joint3)
+        joint5 = Joint(5,0,joint4)
+        
+        self.assertEqual(joint5.ReverseNthJoint(1), joint1, "function returned wrong joint")
+        self.assertEqual(joint5.ReverseNthJoint(5), joint5, "function returned wrong joint")
+        self.assertEqual(joint5.ReverseNthJoint(3), joint3, "function returned wrong joint")
+        
+        exception = False
+        try:
+            joint5.ReverseNthJoint(6)
+        except ArmException:
+            exception = True
+        
+        self.assertTrue(exception, "n larger than arm length did not raise exception")
+        
+        joint5.close()
+        
     def testTrueAngle(self):
         emptyJoint = Empty()
         joint1 = Joint(55,55,emptyJoint)
@@ -136,4 +160,86 @@ class Joint_Test(unittest.TestCase):
         self.assertTrue(exception1)
         self.assertTrue(exception2)
         self.assertTrue(exception3)
+
+class ArmCommandTests(unittest.TestCase):
     
+    def testArmCommand(self):
+        command = ArmCommand(5, 3, 75, False)
+        self.assertEqual(str(command), "command: Time: 5, joint: 3, angle: 75, grab: False", "Command representation incorrect")
+        
+    def testGetTime(self):
+        command = ArmCommand(55,17,28, True)
+        self.assertEqual(command.getTime(), 55, "command returned incorrect time")
+    
+    def testGetJoint(self):
+        command = ArmCommand(55,17,28, True)
+        self.assertEqual(command.getJoint(), 17, "command returned incorrect joint")
+    
+    def testGetAngle(self):
+        command = ArmCommand(55,17,28, False)
+        self.assertEqual(command.getAngle(), 28, "command returned incorrect angle")
+    
+    def testGetGrabFalse(self):
+        command = ArmCommand(55,17,28, False)
+        self.assertFalse(command.getGrab(), "command returned grab as true")
+        
+    def testGetGrabTrue(self):
+        command = ArmCommand(55,17,28, True)
+        self.assertTrue(command.getGrab(), "command returned grab as false")  
+    
+class CommandCsvReaderTests(unittest.TestCase):
+        
+    def testCommandCsvReader(self):
+        reader = CommandCsvReader()
+        reader.load("armcommands.csv", ';')
+        commands = reader.getCommandList()
+        self.assertEqual((commands[8])[1].getAngle(), 60, "Expected data not present in the commandlist")
+
+class commandExecuter(unittest.TestCase):
+    
+    def testGetCommands(self):
+        commands = {}
+        commands[5] = [ArmCommand(5, 3, 75, False), ArmCommand(5, 4, 275, True)]
+        commands[8] = [ArmCommand(8, 2, 25, False)]
+        commands[8.7259] = [ArmCommand(8.7259, 2, 25, False)]
+        
+        emptyJoint = Empty()
+        joint1 = Joint(55,55,emptyJoint)
+        joint2 = Joint(14,14,joint1)
+        joint3 = Joint(-12,-12,joint2)
+        joint4 = Joint(288,288,joint3)
+        joint5 = Joint(288,288,joint4)
+        
+        executer = CommandExecuter(joint5)
+        executer.setCommands(commands)
+        
+        self.assertEqual(executer.getCommands(), commands, "command list incorrect")
+        self.assertEqual(executer.getTimeCommands(5), commands[5], "command list incorrect")
+        self.assertEqual(executer.getTimeCommands(4), [], "command list incorrect")
+        self.assertEqual(executer.getTimeCommands(8.7259), commands[8.7259], "command list incorrect")
+        
+        joint5.close()
+        
+    def testGetSortedKeys(self):
+        commands = {}
+        commands[5] = [ArmCommand(5, 3, 75, False), ArmCommand(5, 4, 275, True)]
+        commands[3] = [ArmCommand(8, 2, 25, False)]
+        commands[8.7259] = [ArmCommand(8.7259, 2, 25, False)]
+        commands[7.27] = [ArmCommand(7.27, 3, 75, False), ArmCommand(7.27, 4, 275, True)]
+        commands[0] = [ArmCommand(0, 3, 75, False), ArmCommand(0, 4, 275, True)]
+        
+        emptyJoint = Empty()
+        joint1 = Joint(55,55,emptyJoint)
+        joint2 = Joint(14,14,joint1)
+        joint3 = Joint(-12,-12,joint2)
+        joint4 = Joint(288,288,joint3)
+        joint5 = Joint(288,288,joint4)
+        
+        executer1 = CommandExecuter(joint5)
+        executer1.setCommands(commands)
+        executer2 = CommandExecuter(joint5)
+        
+        self.assertEqual(executer1.getSortedKeys(), [0, 3, 5, 7.27, 8.7259], "Keys incorrectly sorted")
+        self.assertEqual(executer2.getSortedKeys(), [], "Keys incorrectly sorted")
+        
+        joint5.close()

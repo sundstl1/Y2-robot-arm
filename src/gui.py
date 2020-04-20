@@ -5,7 +5,7 @@ from PyQt5.Qt import QBrush, QColor, QVBoxLayout, QGroupBox, QHBoxLayout,\
 from armGraphics import JointGraphicsItem
 from armGraphics import ConnectionGraphicsItem
 from coordinates import xy
-from guiControls import jointSlider, GrabButton 
+from guiControls import jointSlider, GrabButton , ImportButton, RunProgramButton
 from box import Box
 from boxGraphics import BoxGraphicsItem
 
@@ -147,9 +147,19 @@ class GUI(QtWidgets.QMainWindow):
             sliderContainer.addWidget(slider)
             joint = joint.tail
         sliderContainer.addWidget(slider)
-        grabButton = GrabButton(self.jointGraphics[0])
-        hbox.addWidget(grabButton)
         
+        buttonBox = QVBoxLayout()
+        grabButton = GrabButton(self.jointGraphics[0])
+        buttonBox.addWidget(grabButton)
+        hbox.addLayout(buttonBox)
+        runButton = RunProgramButton(self.arm, self)
+        buttonBox.addWidget(runButton)
+        importButton = ImportButton(runButton)
+        buttonBox.addWidget(importButton)
+        
+    def updateControls(self):
+        for slider in self.jointSliders:
+            slider.updateValue()
 
     def updateLabel(self):
         self.label.setText("grabber location: " + str(self.arm.EndPosition(xy(0, 0))))

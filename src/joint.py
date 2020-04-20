@@ -77,6 +77,12 @@ class Joint(Arm):
             return self
         else:
             return self.tail.NthJoint(n-1)
+        
+    def ReverseNthJoint(self, n):
+        armLength = self.NumberOfJoints()
+        if (armLength < n):
+            raise ArmException("Joint " + str(n) + " does not exist in arm.")
+        return self.NthJoint(armLength - n)
     
     def TrueAngle(self):
         trueAngle = self.angle + self.tail.TrueAngle()

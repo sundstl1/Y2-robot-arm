@@ -1,7 +1,10 @@
 import sys
 from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtCore import Qt, QSize
-from PyQt5.Qt import QSpinBox
+from PyQt5.Qt import QSpinBox, QFileDialog
+from commandImporter import *
+from commandExecuter import *
+import threading
 
 class jointSlider(QtWidgets.QWidget):
    
@@ -59,9 +62,12 @@ class jointSlider(QtWidgets.QWidget):
        self.joint.changeAngle(value)
        self.slider.setValue(int(value*100))
        
+   def updateValue(self):
+       #self.slider.setValue(self.joint.setAngle)
+       self.numBoxValueChange(self.joint.setAngle)
+       
 class GrabButton(QtWidgets.QPushButton):
-   
-   def __init__(self, jointGraphics):
+    def __init__(self, jointGraphics):
        
       super(GrabButton, self).__init__()
       self.setCheckable(True)
@@ -70,7 +76,7 @@ class GrabButton(QtWidgets.QPushButton):
       
       self.clicked.connect(self.buttonPress)
       
-   def buttonPress(self):
+    def buttonPress(self):
        if (not self.isChecked()):
            self.jointGraphics.releaseBox()
            self.setText("Grab")
@@ -80,8 +86,69 @@ class GrabButton(QtWidgets.QPushButton):
             else:
                 self.setText("Release")
            
-           
+class ImportButton(QtWidgets.QPushButton):
+    def __init__(self, runButton):
+       
+      super(ImportButton, self).__init__()
+      self.runButton = runButton
+      self.setCheckable(False)
+      self.setText("Import program")
+      
+      self.clicked.connect(self.buttonPress)
+      
+    def buttonPress(self):
+        fname = QFileDialog.getOpenFileName(self, 'Select command file', 
+         'c:\\',"csv files (*.csv)")
+        
+        if (fname):
+            try:
+                reader = CommandCsvReader()
+                reader.load(fname[0], ';')
+                self.runButton.setReader(reader)
+            except:
+                raise CsvException("Invalid file")
+            
+        
+class RunProgramButton(QtWidgets.QPushButton):
+    def __init__(self, arm, gui):
+       
+      super(RunProgramButton, self).__init__()
+      self.setCheckable(False)
+      self.setEnabled(False)
+      self.setText("Run program")
+      self.running = False
+      self.clicked.connect(self.buttonPress)
+      self.reader = None
+      self.arm = arm
+      
+      self.executer = CommandExecuter(self.arm, gui)
+      
+    def buttonPress(self):
+        if (self.running):
+            self.stop()
+        else:
+            self.setText("Stop program")
+            self.running = True
+            print(self.reader.getCommandList())
+            print(self.executer.getCommands())
+            self.executer.setCommands(self.reader.getCommandList())
+            thread = threading.Thread(target=self.executer.run)
+            thread.start()
+            thread2 = threading.Thread(target=self.threadWaiter, args=[thread])
+            thread2.start()
+            
+            
+    def threadWaiter(self, thread):
+        thread.join()
+        self.setText("Run program")
+        self.running = False
+        
+    def setReader(self, reader):
+        self.reader = reader
+        self.setEnabled(True)
         
     
-    
-    
+    def stop(self):
+        self.setText("Run program")
+        self.running = False
+        self.executer.stop()
