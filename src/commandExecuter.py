@@ -23,6 +23,8 @@ class CommandExecuter():
         return self.commands.get(time, [])
     
     def executeCommand(self, command):
+        if (command.getGrab()):
+            self.gui.grabButton.click()
         joint = self.arm.ReverseNthJoint(command.getJoint())
         joint.changeAngle(command.getAngle())
         self.gui.updateControls()
@@ -50,7 +52,7 @@ class CommandExecuter():
                     t.start()
             for t in self.executeList:
                 t.join()
-    
+            self.RUNNING = False
     
     def stop(self):
         self.RUNNING = False

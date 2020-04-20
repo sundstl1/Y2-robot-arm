@@ -77,6 +77,7 @@ class GrabButton(QtWidgets.QPushButton):
       self.clicked.connect(self.buttonPress)
       
     def buttonPress(self):
+       print("press!")
        if (not self.isChecked()):
            self.jointGraphics.releaseBox()
            self.setText("Grab")
@@ -106,7 +107,8 @@ class ImportButton(QtWidgets.QPushButton):
                 reader.load(fname[0], ';')
                 self.runButton.setReader(reader)
             except:
-                raise CsvException("Invalid file")
+                #invalid file. No error message for the user yet :(
+                pass
             
         
 class RunProgramButton(QtWidgets.QPushButton):

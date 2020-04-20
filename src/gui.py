@@ -149,8 +149,8 @@ class GUI(QtWidgets.QMainWindow):
         sliderContainer.addWidget(slider)
         
         buttonBox = QVBoxLayout()
-        grabButton = GrabButton(self.jointGraphics[0])
-        buttonBox.addWidget(grabButton)
+        self.grabButton = GrabButton(self.jointGraphics[0])
+        buttonBox.addWidget(self.grabButton)
         hbox.addLayout(buttonBox)
         runButton = RunProgramButton(self.arm, self)
         buttonBox.addWidget(runButton)
