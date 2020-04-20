@@ -44,7 +44,7 @@ class CommandCsvReader():
                 grab = False
             else:
                 grab = True
-            return ArmCommand(int(list[0]), int(list[1]), int(list[2]), grab)
+            return ArmCommand(float(list[0]), int(list[1]), int(list[2]), grab)
         except:
             raise CsvException("Something went wrong while parsing the line: " + line)
         
