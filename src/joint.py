@@ -55,7 +55,11 @@ class Joint(Arm):
     def __init__(self, length, angle, tail):
         if not isinstance(tail, Arm):
             raise LinkedListException('Cannot construct a Joint using {} as the tail'.format(tail))
-        self.length = length
+        if (length < 0):
+            tail.close()
+            raise ArmException("Joint arm length must be greater than 0")
+        else:
+            self.length = length
         self.angle = angle
         self.setAngle = angle
         self.tail = tail
@@ -126,7 +130,7 @@ class Joint(Arm):
     # Sets the speed of angle change.
     def angleUpdater(self):
         while self.RUNNING:
-            time.sleep(0.001)
+            time.sleep(0.01)
             
             #Make sure each joint takes the shortest route
             difference = self.angle - self.setAngle

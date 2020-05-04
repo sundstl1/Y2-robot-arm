@@ -17,12 +17,17 @@ def main(armLengths):
     if (len(armLengths) == 0):
         print("Please provide at least one arm length as a command line parameter")
         quit()
+        
+    for length in armLengths:
+        if (float(length) <= 0):
+            print("All joint lengths must be positive.")
+            quit()
     try:
         arm = Joint(float(armLengths.pop(0)), 0, Empty())
         for length in armLengths:
                 arm = Joint(float(length), 0, arm)
     except:
-        raise Exception("all arguments must be numbers")
+        raise Exception("all arguments must be positive numbers")
     
     #adding movable boxes    
     boxes = []

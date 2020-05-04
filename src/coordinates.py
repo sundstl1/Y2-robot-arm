@@ -1,5 +1,3 @@
-from _ctypes import ArgumentError
-
 class xy():
     def __init__(self, x, y):
         self.x = x

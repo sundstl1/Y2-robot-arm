@@ -1,4 +1,3 @@
-import sys
 from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.Qt import QSpinBox, QFileDialog

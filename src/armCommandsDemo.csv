@@ -1,9 +1,9 @@
-#this is a comment
+# Arm created with the following arm lengths / parameters: 150 50 90 30 40 60 40 30 20
+
+# Move endpoint to first box
 3;1;300
 0;2;120
 3;3;300
-#this is also a comment
-
 3;4;60
 3;5;20
 2;6;320
@@ -11,6 +11,8 @@
 2;8;260
 0;9;105
 14;9;105;True
+
+# Move first box to new location
 15;1;280
 15;2;130
 15;3;270
@@ -21,6 +23,8 @@
 15;8;320
 15;9;140
 27;9;140;True
+
+# Move endpoint to second box
 28;3;265
 28;4;105
 28;5;41.5
@@ -29,12 +33,16 @@
 28;8;0
 28;9;0
 43;9;0;True
+
+# Move second box to new location
 44;2;110
 44;3;300
 44;4;120
 44;5;0
 44;9;355
 52;9;355;True
+
+# Reset arm to starting position
 53;1;0
 53;2;0
 53;3;0
