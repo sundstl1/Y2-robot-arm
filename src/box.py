@@ -5,6 +5,7 @@ class BoxException(Exception):
         super(BoxException, self).__init__(message)
 
 class Box:
+    #Defines the visuals of the movable boxes
     def __init__(self, width, height, position):
         if (isinstance(width, int) and isinstance(height, int)):
             self.width = width

@@ -3,6 +3,7 @@ class CsvException(Exception):
         super(CsvException, self).__init__(message)
 
 class ArmCommand():
+    #defines a single armcommand
     def __init__(self, time, jointNumber, angle, grab):
         self.time = time;
         self.jointNumber = jointNumber
@@ -33,8 +34,8 @@ class CommandCsvReader():
         self.commandList = {}
     
     def lineToCommand(self, line):
-        if (not line):
-            raise CsvException("line is empty")
+        if (not line or line[0] == '#'):
+            return None;
         falseList = [0, "False", "false", "No", "no", "FALSE"]
         try:
             list = line.split(self.delimiter)
@@ -54,6 +55,7 @@ class CommandCsvReader():
     def getTimeCommands(self, time):
         return self.commandList[time]
     
+    #loads a file to the program
     def load(self, filename, delimiter):
         self.filename = filename
         self.delimiter = delimiter
@@ -66,10 +68,11 @@ class CommandCsvReader():
                 row = file.readline()
                 while(row):
                     command = self.lineToCommand(row.strip('\n'))
-                    if (command.getTime() in self.commandList):
-                        self.commandList[command.getTime()].append(command)
-                    else:
-                        self.commandList[command.getTime()] = [command]
+                    if (command != None):
+                        if (command.getTime() in self.commandList):
+                            self.commandList[command.getTime()].append(command)
+                        else:
+                            self.commandList[command.getTime()] = [command]
                     row = file.readline()
         except:
             raise CsvException("Something went wrong while reading the file.")

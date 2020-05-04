@@ -4,7 +4,8 @@ from PyQt5.Qt import QBrush, QColor, QGraphicsRectItem, QRect, QPen, QWidget
 from coordinates import xy
 
 class BoxGraphicsItem(QtWidgets.QGraphicsRectItem):
-
+    
+    #Defines the visuals of boxes
     def __init__(self, box):
         # Call init of the parent object
         super(BoxGraphicsItem, self).__init__()

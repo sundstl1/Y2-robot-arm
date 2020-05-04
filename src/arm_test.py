@@ -2,6 +2,7 @@ import unittest
 import math
 
 from arm import Arm, ArmException
+from gui import GUI
 from joint import Joint, Empty
 from coordinates import xy
 from box import Box, BoxException
@@ -195,51 +196,3 @@ class CommandCsvReaderTests(unittest.TestCase):
         commands = reader.getCommandList()
         self.assertEqual((commands[8])[1].getAngle(), 60, "Expected data not present in the commandlist")
 
-class commandExecuter(unittest.TestCase):
-    
-    def testGetCommands(self):
-        commands = {}
-        commands[5] = [ArmCommand(5, 3, 75, False), ArmCommand(5, 4, 275, True)]
-        commands[8] = [ArmCommand(8, 2, 25, False)]
-        commands[8.7259] = [ArmCommand(8.7259, 2, 25, False)]
-        
-        emptyJoint = Empty()
-        joint1 = Joint(55,55,emptyJoint)
-        joint2 = Joint(14,14,joint1)
-        joint3 = Joint(-12,-12,joint2)
-        joint4 = Joint(288,288,joint3)
-        joint5 = Joint(288,288,joint4)
-        
-        executer = CommandExecuter(joint5)
-        executer.setCommands(commands)
-        
-        self.assertEqual(executer.getCommands(), commands, "command list incorrect")
-        self.assertEqual(executer.getTimeCommands(5), commands[5], "command list incorrect")
-        self.assertEqual(executer.getTimeCommands(4), [], "command list incorrect")
-        self.assertEqual(executer.getTimeCommands(8.7259), commands[8.7259], "command list incorrect")
-        
-        joint5.close()
-        
-    def testGetSortedKeys(self):
-        commands = {}
-        commands[5] = [ArmCommand(5, 3, 75, False), ArmCommand(5, 4, 275, True)]
-        commands[3] = [ArmCommand(8, 2, 25, False)]
-        commands[8.7259] = [ArmCommand(8.7259, 2, 25, False)]
-        commands[7.27] = [ArmCommand(7.27, 3, 75, False), ArmCommand(7.27, 4, 275, True)]
-        commands[0] = [ArmCommand(0, 3, 75, False), ArmCommand(0, 4, 275, True)]
-        
-        emptyJoint = Empty()
-        joint1 = Joint(55,55,emptyJoint)
-        joint2 = Joint(14,14,joint1)
-        joint3 = Joint(-12,-12,joint2)
-        joint4 = Joint(288,288,joint3)
-        joint5 = Joint(288,288,joint4)
-        
-        executer1 = CommandExecuter(joint5)
-        executer1.setCommands(commands)
-        executer2 = CommandExecuter(joint5)
-        
-        self.assertEqual(executer1.getSortedKeys(), [0, 3, 5, 7.27, 8.7259], "Keys incorrectly sorted")
-        self.assertEqual(executer2.getSortedKeys(), [], "Keys incorrectly sorted")
-        
-        joint5.close()

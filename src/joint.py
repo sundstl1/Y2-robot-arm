@@ -5,6 +5,7 @@ import math
 import threading
 import time
 
+#definitions for empty arm, / end of arm
 class Empty(Arm):
     '''A singleton representing the empty list'''
 
@@ -48,6 +49,7 @@ class Empty(Arm):
     def close(self):
         return
 
+#definitions for a single joint.
 class Joint(Arm):
 
     def __init__(self, length, angle, tail):
@@ -66,9 +68,11 @@ class Joint(Arm):
     def IsEmpty(self):
         return False
 
+    #iterates through all joints and adds them up
     def NumberOfJoints(self):
         return self.tail.NumberOfJoints() + 1
 
+    #finds the nth joint starting from the outermost one
     def NthJoint(self, n):
         '''
         returns the nth joint.
@@ -78,24 +82,26 @@ class Joint(Arm):
         else:
             return self.tail.NthJoint(n-1)
         
+    #finds the nth joint starting from the innermost one    
     def ReverseNthJoint(self, n):
         armLength = self.NumberOfJoints()
         if (armLength < n):
             raise ArmException("Joint " + str(n) + " does not exist in arm.")
         return self.NthJoint(armLength - n)
     
+    #Finds the joints angle in global space.
     def TrueAngle(self):
         trueAngle = self.angle + self.tail.TrueAngle()
         
-        '''
-        set angle in the range 0-360.
-        '''
+        
+        #set angle in the range 0-360.
         while (trueAngle > 360):
             trueAngle -= 360
         while (trueAngle < 0):
             trueAngle += 360
         return trueAngle
     
+    #finds the postition of the joint in global space by recursively adding up the position of earlier joints.
     def EndPosition(self, previousPosition):
         angle = math.radians(self.TrueAngle())
         position = xy(self.length * math.sin(angle), self.length * math.cos(angle))
@@ -112,14 +118,15 @@ class Joint(Arm):
     def changeLength(self, length):
         self.length = length
         
+     #This function closes all joint threads. Should be called at the end of execution
     def close(self):
-        #This function closes all joint threads
         self.RUNNING = False
         self.tail.close()
         
+    # Sets the speed of angle change.
     def angleUpdater(self):
         while self.RUNNING:
-            time.sleep(0.01)
+            time.sleep(0.001)
             
             #Make sure each joint takes the shortest route
             difference = self.angle - self.setAngle

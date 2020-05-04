@@ -1,8 +1,9 @@
 from commandImporter import *
-import time
 import threading
 
 class CommandExecuter():
+    # This class executes a list of arm commands at specified time stamps.
+    # All timestamps are relative i.e. are executed timestamp seconds after run has been called. 
     def __init__(self, arm, gui):
         self.commands = None
         self.arm = arm
@@ -28,12 +29,6 @@ class CommandExecuter():
         joint = self.arm.ReverseNthJoint(command.getJoint())
         joint.changeAngle(command.getAngle())
         self.gui.updateControls()
-        
-    def getSortedKeys(self):
-        if (self.commands == None):
-            return []
-        else:
-            return sorted(self.commands)
     
     def run(self):
         if (self.commands == None):
@@ -42,8 +37,7 @@ class CommandExecuter():
             if (self.RUNNING):
                 raise Exception("Already running")
             self.RUNNING = True
-            keyList = self.getSortedKeys()
-            start = time.time()
+            keyList = self.getCommands()
             
             for timestamp in keyList:
                 for command in self.commands[timestamp]:

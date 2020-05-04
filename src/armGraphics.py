@@ -5,6 +5,7 @@ from coordinates import xy
 
 class JointGraphicsItem(QtWidgets.QGraphicsEllipseItem):
 
+    #This class defines the visuals of the rotating joints on the arm.
     def __init__(self, joint):
         # Call init of the parent object
         super(JointGraphicsItem, self).__init__()
@@ -27,9 +28,11 @@ class JointGraphicsItem(QtWidgets.QGraphicsEllipseItem):
         y = location.getY()
         self.setPos(x, 700-y)
         self.jointNumber.setPos(x-3,700-y-7)
+        #If arm is holding a box, also update its position
         if (self.box != None):
             self.box.box.setXY(xy(x-350,y-350))        
-        
+    
+    #This is called upon pressing the grab button.    
     def grabBox(self):
         if self.overlap:
             overlappedItems = self.collidingItems()
@@ -46,11 +49,13 @@ class JointGraphicsItem(QtWidgets.QGraphicsEllipseItem):
         self.setBrush(self.tempBrush)
         self.box = None
     
+    #used to make sure only the end joint can pick up boxes
     def toggleOverlap(self, bool):
         self.overlap = bool
         
 class ConnectionGraphicsItem(QtWidgets.QGraphicsLineItem):
-
+    
+    #This class defines the lines connecting the joints.
     def __init__(self, start, end):
         # Call init of the parent object
         super(ConnectionGraphicsItem, self).__init__()
