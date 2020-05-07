@@ -105,7 +105,7 @@ class Joint(Arm):
             trueAngle += 360
         return trueAngle
     
-    #finds the postition of the joint in global space by recursively adding up the position of earlier joints.
+    #finds the position of the joint in global space by recursively adding up the position of earlier joints.
     def EndPosition(self, previousPosition):
         angle = math.radians(self.TrueAngle())
         position = xy(self.length * math.sin(angle), self.length * math.cos(angle))

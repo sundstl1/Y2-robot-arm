@@ -1,51 +1,28 @@
 # Y2 robot arm simulator
 
-432021 robot arm simulation project for the course CS-A1121 Ohjelmointi Y2
-
-1. Mitä ominaisuuksia olet jo toteuttanut projektiisi?
-    * The project currently conforms to "Iteration 2".
-    * A branch named Iteration_2_finished has been created to save this state for future reference.
-    * A specification for what that means can be found on page 3 in the project plan.
-
-2. Käyttöohje
-
-  - Voiko ohjelmaa jo ajaa? (kyllä/ei)
-    * yes
-
-  - Kuinka ohjelma käynnistetään?
-    * The program can be run by executing main.py in the src/ folder
-    * As Command line arguments, provide te desired arm lengths for the arm.
-    * On my system that means running the command "python main.py 70 50 45 37" for example.
-
-  - Mitä sillä voi tässä vaiheessa tehdä?
-    * The program shows a robot arm with an arbitrary number of joints.
-    * Joint angles may be manipulated using sliders.
-    * Manipulations to individual joints are handled in separate threads, allowing multiple joints to rotate at once.
-    * A joint will always choose the shortest rotation direction to its set angle.
-    * There is no physics simulation. movement speed is simply limited as a max change in angle / timeunit.
-    * The coordinates of the arm endpoint is shown at the top of the window (origo is a the root of the arm).
-    * The amount of joints and arm lengths may be chosen by command line arguments.
+## 432021 robot arm simulation project for the course CS-A1121 Ohjelmointi Y2
+	-The program simulates a 2-dimensional robot arm with an arbitrary number of joints.
+	- It allows for joint angle manipulation, moving objects and importing premade command programs.
 
 
+## File and directory structure
 
-3. Aikataulu
+	- Project source files can be found in /src. All code has been written by the author, allthough gui.py and the linked list implementation in arm.py and joint.py have been derived from earlier excercise rounds in the course (namely Robot and LinkedList excercises).
+	- Supplementary documents may be found in /doc. This includes project plan, technical specifications and final documentation.
 
-  - Kuinka paljon olet jo käyttänyt aikaa projektiin?
-    * I have currently invested around 15-20 hours in the project.
+## Installation instructions
 
-  - Onko ilmennyt muutoksia suunnitelman aikatauluun?
-    * I ended up skipping Iteration 1 and going straight to Iteration 2 (see project plan page 3).
-    * This is because it ended up being just as simple to implement Iteration 2 straight away compared to doing iteration 1 first.
- 
-4. Muuta
+	- The program has been writen for python 3.7.4. Use earlier versions at your own peril.
+	- The program makes use of PyQt5.
 
-  - Onko ilmaantunut erityisiä ongelmia?
-    * I planned to complete theproject using test driven development.
-    * Unfortunately I haven't found a compelling way to test the UI though.
-    * I also ended up not doing test cases for thread handling beforehand due to just wanting to get the features done.
-    * I should implement some tests for this.
+## User guide
 
-  - Oletko joutunut tekemään muutoksia suunnitelmaasi?
-    * Nothing noticeable. Some small changes to file structure but I would have been very surprised if that didn't happen.
-    * The project is currently heavily derived from robots and linked_list excercises earlier this course.
-    * I expect more deviation now that the basic functionality is implemented.
+	- The program is run by executing main.py in /src folder using python
+	- As command line arguments, provide any amount of positive nonzero numbers (float), which determine the lengths between joints. A new joint is added for each number provided. At least one length must be provided.
+	- If one would like to create an arm with joint lengths 50, 70 and 27.37 for example, one would first navigate to the /src folder, and then run the command "python main.py 50 70 27.37" without the quotation marks.
+
+	- The program can also run imported command files. For import instructions, please read doc/Documentation.pdf
+	- The repository contains 3 example programs in /example_command_files
+		- armCommandsForTest.csv: which is used for unit testing
+		- armCommandsDemo.csv: which demonstrates moving boxes around. For arm configuration, please see comments in the file.
+		- armCommandsError.csv: an intentionally broken command file that demonstrates software behaviour when attempting to import an erroneous file.

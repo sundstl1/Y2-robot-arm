@@ -105,7 +105,7 @@ class Joint_Test(unittest.TestCase):
         emptyJoint = Empty()
         joint1 = Joint(55,55,emptyJoint)
         joint2 = Joint(14,14,joint1)
-        joint3 = Joint(-12,-12,joint2)
+        joint3 = Joint(12,-12,joint2)
         joint4 = Joint(288,288,joint3)
         joint5 = Joint(288,288,joint4)
         
@@ -192,7 +192,7 @@ class CommandCsvReaderTests(unittest.TestCase):
         
     def testCommandCsvReader(self):
         reader = CommandCsvReader()
-        reader.load("armcommands.csv", ';')
+        reader.load("../example_command_files/armCommandsForTest.csv", ';')
         commands = reader.getCommandList()
         self.assertEqual((commands[8])[1].getAngle(), 60, "Expected data not present in the commandlist")
 
